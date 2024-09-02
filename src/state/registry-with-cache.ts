@@ -1,4 +1,4 @@
-import LRU from "lru-cache"
+import { LRUCache } from "lru-cache"
 import { CanonicalEntity, UUID, EntityRegistry } from "../types"
 
 interface Config<M extends object> {
@@ -8,13 +8,13 @@ interface Config<M extends object> {
 
 export class RegistryWithCache<M extends object> implements EntityRegistry<M> {
   private cacheSize: number
-  private cache: LRU<string, CanonicalEntity<any, M>>
+  private cache: LRUCache<string, CanonicalEntity<any, M>>
   private registry: EntityRegistry<M>
 
   constructor({ cacheSize, registry }: Config<M>) {
     this.cacheSize = cacheSize
     this.registry = registry
-    this.cache = new LRU({
+    this.cache = new LRUCache({
       max: cacheSize
     })
   }

@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid'
-import LRU from "lru-cache"
+import { LRUCache } from "lru-cache"
 import { Logger, ChangelogAdapter, CanonicalEntity, ChangeEvent, EntityEnvelope, ActionType, CanonicalSchema } from './types'
 import { TransactionManager } from "./transaction-manager"
 import { Entity } from './entity'
@@ -16,7 +16,7 @@ export class Changelog<M extends object> {
   private observer: (change: CanonicalEntity<any, M>, schema: CanonicalSchema) => Promise<void>
   private transactionManager: TransactionManager
   private logger: Logger
-  private cache: LRU<string, boolean>
+  private cache: LRUCache<string, boolean>
   private healthStats = {
     totalChangesProduced: 0,
     totalChangesReceived: 0,
@@ -29,7 +29,7 @@ export class Changelog<M extends object> {
     this.observer = observer
     this.transactionManager = new TransactionManager()
     this.adapter.observe(x => this.onChange(x))
-    this.cache = new LRU({
+    this.cache = new LRUCache({
       max: cacheSize
     })
   }
